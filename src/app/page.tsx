@@ -3,10 +3,10 @@ import { VoiceGuardLogo } from '@/components/voice-guard-logo';
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen w-full flex-col bg-background">
-      <header className="sticky top-0 z-10 flex h-16 items-center gap-4 border-b bg-background/80 px-4 backdrop-blur-sm md:px-6">
+    <div className="flex min-h-screen w-full flex-col">
+      <header className="sticky top-0 z-10 flex h-20 items-center gap-4 border-b border-primary/20 bg-background/50 px-4 backdrop-blur-sm md:px-8">
         <VoiceGuardLogo />
-        <h1 className="text-xl font-semibold tracking-tight text-foreground">
+        <h1 className="text-3xl font-bold tracking-tighter text-foreground">
           VoiceGuard
         </h1>
       </header>

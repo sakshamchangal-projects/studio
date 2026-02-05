@@ -11,7 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Upload, FileAudio, X, Loader2 } from 'lucide-react';
+import { UploadCloud, FileAudio, X, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { AnalysisResult } from './analysis-result';
 import { useToast } from '@/hooks/use-toast';
@@ -23,6 +23,7 @@ function SubmitButton({ disabled }: { disabled: boolean }) {
       type="submit"
       disabled={pending || disabled}
       className="mt-6 w-full"
+      size="lg"
     >
       {pending ? (
         <>
@@ -40,7 +41,7 @@ function ResultPanel({ state }: { state: AnalysisState | null }) {
   const { pending } = useFormStatus();
 
   const Placeholder = ({ children }: { children: React.ReactNode }) => (
-    <div className="flex h-full min-h-[300px] flex-col items-center justify-center rounded-lg border-2 border-dashed bg-secondary/50 p-6 text-center text-muted-foreground">
+    <div className="flex h-full min-h-[300px] flex-col items-center justify-center rounded-lg border-2 border-dashed border-border bg-card p-6 text-center text-muted-foreground">
       {children}
     </div>
   );
@@ -49,7 +50,7 @@ function ResultPanel({ state }: { state: AnalysisState | null }) {
     return (
       <Placeholder>
         <Loader2 className="h-12 w-12 animate-spin text-primary" />
-        <p className="mt-4 font-semibold">Analyzing your audio...</p>
+        <p className="mt-4 text-lg font-semibold">Analyzing your audio...</p>
         <p className="text-sm">This may take a moment.</p>
       </Placeholder>
     );
@@ -71,12 +72,12 @@ function ResultPanel({ state }: { state: AnalysisState | null }) {
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
-        className="mx-auto"
+        className="mx-auto text-primary"
       >
         <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.72" />
         <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.72-1.72" />
       </svg>
-      <p className="mt-4 font-semibold">Results will appear here</p>
+      <p className="mt-4 text-lg font-semibold">Results will appear here</p>
       <p className="text-sm">Upload an audio file to begin.</p>
     </Placeholder>
   );
@@ -164,84 +165,80 @@ export function VoiceGuardApp() {
       action={formAction}
       className="grid w-full gap-8 md:grid-cols-2"
     >
-      <Card className="flex flex-col shadow-lg">
+      <Card className="flex flex-col border-2 border-border shadow-2xl shadow-primary/10">
         <CardHeader>
-          <CardTitle>Upload Audio Sample</CardTitle>
+          <CardTitle className="text-2xl font-bold">Upload Audio</CardTitle>
           <CardDescription>
-            Upload an MP3 audio file to classify it as AI or human-generated
-            speech.
+            Upload an MP3 to classify it as AI or human-generated.
           </CardDescription>
         </CardHeader>
-        <CardContent className="flex flex-1 flex-col">
-          <div className="flex-grow">
-            <fieldset disabled={pending}>
-              <input
-                type="file"
-                name="audioFile"
-                ref={fileInputRef}
-                className="hidden"
-                accept="audio/mpeg"
-                onChange={e => handleFileChange(e.target.files?.[0] || null)}
-              />
-              {!file ? (
-                <div
-                  onDragEnter={handleDragEnter}
-                  onDragLeave={handleDragLeave}
-                  onDragOver={handleDragOver}
-                  onDrop={handleDrop}
-                  onClick={onButtonClick}
-                  className={cn(
-                    'flex h-full min-h-[200px] flex-col items-center justify-center rounded-lg border-2 border-dashed p-12 text-center transition-colors cursor-pointer',
-                    isDragging
-                      ? 'border-primary bg-primary/10'
-                      : 'border-border hover:border-primary/50'
-                  )}
-                >
-                  <Upload className="mx-auto h-12 w-12 text-muted-foreground" />
+        <CardContent className="flex flex-1 flex-col justify-between">
+          <fieldset disabled={pending}>
+            <input
+              type="file"
+              name="audioFile"
+              ref={fileInputRef}
+              className="hidden"
+              accept="audio/mpeg"
+              onChange={e => handleFileChange(e.target.files?.[0] || null)}
+            />
+            {!file ? (
+              <div
+                onDragEnter={handleDragEnter}
+                onDragLeave={handleDragLeave}
+                onDragOver={handleDragOver}
+                onDrop={handleDrop}
+                onClick={onButtonClick}
+                className={cn(
+                  'relative flex h-full min-h-[200px] cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-border p-12 text-center transition-all duration-300',
+                  isDragging
+                    ? 'border-primary bg-primary/10 scale-105'
+                    : 'hover:border-primary/50 hover:bg-accent'
+                )}
+              >
+                <div className="z-10">
+                  <UploadCloud className="mx-auto h-12 w-12 text-muted-foreground" />
                   <p className="mt-4 font-semibold">
-                    Drag & drop an MP3 file here
+                    Drag & drop an MP3 file
                   </p>
                   <p className="text-sm text-muted-foreground">
-                    or click to browse
-                  </p>
-                  <p className="mt-2 text-xs text-muted-foreground">
-                    Max file size: 5MB
+                    or click to browse (max 5MB)
                   </p>
                 </div>
-              ) : (
-                <div className="flex items-center justify-between rounded-lg border bg-secondary p-4">
-                  <div className="flex items-center gap-3 overflow-hidden">
-                    <FileAudio className="h-8 w-8 flex-shrink-0 text-primary" />
-                    <div className="flex flex-col overflow-hidden">
-                      <span className="truncate text-sm font-medium">
-                        {file.name}
-                      </span>
-                      <span className="text-xs text-muted-foreground">
-                        {(file.size / 1024 / 1024).toFixed(2)} MB
-                      </span>
-                    </div>
+              </div>
+            ) : (
+              <div className="flex items-center justify-between rounded-lg border bg-secondary/50 p-4">
+                <div className="flex items-center gap-3 overflow-hidden">
+                  <FileAudio className="h-8 w-8 flex-shrink-0 text-primary" />
+                  <div className="flex flex-col overflow-hidden">
+                    <span className="truncate text-sm font-medium">
+                      {file.name}
+                    </span>
+                    <span className="text-xs text-muted-foreground">
+                      {(file.size / 1024 / 1024).toFixed(2)} MB
+                    </span>
                   </div>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    type="button"
-                    onClick={removeFile}
-                    aria-label="Remove file"
-                  >
-                    <X className="h-4 w-4" />
-                  </Button>
                 </div>
-              )}
-            </fieldset>
-          </div>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  type="button"
+                  onClick={removeFile}
+                  aria-label="Remove file"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+            )}
+          </fieldset>
           <SubmitButton disabled={!file} />
         </CardContent>
       </Card>
-      <Card className="shadow-lg">
+      <Card className="shadow-2xl shadow-primary/10">
         <CardHeader>
-          <CardTitle>Analysis Result</CardTitle>
+          <CardTitle className="text-2xl font-bold">Analysis Result</CardTitle>
           <CardDescription>
-            The classification of your audio sample will appear here.
+            The classification of your audio sample will appear below.
           </CardDescription>
         </CardHeader>
         <CardContent>
