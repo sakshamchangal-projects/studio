@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
-import { useFormState, useFormStatus } from 'react-dom';
+import { useActionState, useState, useRef, useEffect } from 'react';
+import { useFormStatus } from 'react-dom';
 import { handleAudioAnalysis, type AnalysisState } from '@/app/actions';
 import { Button } from '@/components/ui/button';
 import {
@@ -83,7 +83,7 @@ function ResultPanel({ state }: { state: AnalysisState | null }) {
 }
 
 export function VoiceGuardApp() {
-  const [state, formAction] = useFormState(handleAudioAnalysis, null);
+  const [state, formAction] = useActionState(handleAudioAnalysis, null);
   const [file, setFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
